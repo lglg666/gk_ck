@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no">
+		<title>升级申请</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ct.css"/>
+		<style type="text/css">
+			#header .topbar {
+				background-color: #FAFAFA;
+  			border-bottom: 1px solid #eee;
+			}
+			#header .title,
+			#header .topbar span {
+				color: #333 !important;
+			}
+			#header .tit_icon {
+				background-size: 25px;
+			}
+			.header-bg {
+				background-color: #eee;
+			}
+			.ct-icon-left{
+				background-image: url(../../image/arrow-left-black.png);
+			}
+			.tips{
+				color: #E56017;
+				padding: 10px 10px 20px;
+				margin: 20px 15px 10px;
+				background-color: #F9F4E7;
+				min-height: 88px;
+			}
+			.confirm{
+				margin: 30px 15px;
+			}
+			.up-btn{
+				width: 100%;
+				padding: 10px;
+				color: #FFFFFF;
+				background: linear-gradient(to right, #2FBDD7, #30A1D6);
+			}
+			#main{
+				background-color: #FFFFFF;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="header-bg">
+				<div id="header" class="header">
+					<div class="topbar" style="">
+						<span class="ct-icon-left ct-icon-left-black" onclick="javascript :history.back(-1);"></span>
+		        <span class="title text-overflow" style="max-width: 200px;">升级申请</span>
+					</div>
+				</div>
+			</header>
+			<div id="main">
+				<div class="tips">
+					<div class="hidden">
+						<div class="margin-t-10">您已提交 : 普通升至 一星 的升级申请</div>
+						<div class="margin-t-10">状态 : 已提交</div>
+						<div class="margin-t-10">审核者信息</div>
+						<div class="row">
+							<div class="col-6 margin-t-10">昵称: 1245</div>
+							<div class="col-6 margin-t-10">手机号: 124567899</div>
+							<div class="col-6 margin-t-10">微信: 1245</div>
+							<div class="col-6 margin-t-10">审核状态: 未审核</div>
+						</div>
+					</div>
+				</div>
+				<div class="confirm">
+					<div class="up-btn back text-center" onclick="javascript :history.back(-1);">返回</div>
+					<div class="up-btn apply text-center hidden" onclick="apply()">立即申请</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/api.web.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/template" template="main">
+		{{? it.status == 1}}
+			<div class="margin-t-10">您已提交 : {{= it.oldrank}}升至 {{= it.newrank}} 的升级申请</div>
+			<div class="margin-t-10">状态 : {{= it.status == 0 ? '可申请' : '申请中'}}</div>
+			{{? it.name instanceof Array && it.name.length != 0}}
+				{{~ it.name : value:index}}
+					<div class="margin-t-10">审核者信息{{= index + 1}}</div>
+					<div class="row">
+						<div class="col-6 margin-t-10">昵称: {{= value.true_name}}</div>
+						<div class="col-6 margin-t-10">手机号: {{= value.mobile}}</div>
+						<div class="col-6 margin-t-10">微信: {{= value.weixin}}</div>
+						<div class="col-6 margin-t-10">审核状态：
+							{{= value.status == 0 ? '未审核' : (value.status == 1 ? '审核通过' : '拒绝')}}
+						</div>
+					</div>
+				{{~}}
+			{{?}}
+		{{??}}
+			<div class="margin-t-10">您当前的等级：{{= it.oldrank}}</div>
+			<div class="margin-t-10">您可申请升级的等级为：{{= it.newrank}}</div>
+			<div class="margin-t-10">是否提交申请？</div>
+		{{?}}
+		
+		<!--<div class="margin-t-10">系统正在为您匹配上级审核者,请留意刷新!</div>-->
+	</script>
+	<script type="text/javascript">
+		//获取申请状态
+		function init() {
+			ajax.get({
+				ctrl: 'Team',
+				fn: 'upRankStatus',
+				data: {
+					values: {
+//						'token': 'U5kSehZspF19wFR'
+					},
+				},
+				showError: true,
+				hideLoading: false,
+				showProgress: true,
+				success: function(ct) {
+					console.log(JSON.stringify(ct))
+					T.html(".tips","main",ct);
+					if(ct.status == 0){
+						$api.addCls($api.dom(".back"),'hidden');
+						$api.removeCls($api.dom('.apply'),'hidden');
+					}
+				},
+			});
+		}
+		//申请升级
+		function apply(){
+			ajax.get({
+				ctrl: 'Team',
+				fn: 'userUpgrade',
+				data: {
+					values: {
+					},
+				},
+				showError: true,
+				hideLoading: false,
+				showProgress: true,
+				success: function(ct) {
+					if(ct){
+						init();
+					}
+				},
+			});
+		}
+		
+		$(function(){
+			init();
+		})
+	</script>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no">
+		<title>申诉</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ct.css"/>
+		<style type="text/css">
+			.appeal-title{
+				background-color: #fff;
+				padding: 15px 10px 0 10px;
+			}
+			.contain-box{
+				background-color: #fff;
+			}
+			.text-box{
+				background-color: #efefef;
+				width: 100%;
+				border-radius: 4px;
+			}
+			.explain{
+				padding: 15px 10px 5px 0;
+				color: #999;
+			}
+			.bg-ef{
+				background-color: #efefef;
+			}
+			.appeal-btn{
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				padding: 17px 0;
+				color: #fff;
+				background-color: #408bf0;
+				z-index: 99;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<header class="header-bg">
+				<div id="header" class="header">
+					<div class="topbar" style="">
+						<span class="ct-icon-left ct-icon-left-black" onclick="javascript :history.back(-1);"></span>
+		        <span class="title text-overflow" style="max-width: 200px;">申诉</span>
+					</div>
+				</div>
+			</header>
+			<!-- start main -->
+			<div id="main">
+				<div class="appeal-title">问题标题</div>
+				<div class="contain-box padded-10 margin-b-10">
+					<input type="text" name="title" placeholder="请输入问题标题"  class="text-box padded-10">
+				</div>
+				<div class="appeal-title">问题反馈</div>
+				<div class="contain-box padded-10">
+					<textarea name="content"  rows="10" cols="" class="text-box padded-10" placeholder="描述一下您的问题"></textarea>
+					<div class="explain">问题反馈最少输入5个字</div>
+				</div>
+				<div class="appeal-title bg-ef text-333 padded-b-15">请提供相关问题截图</div>
+				<div onclick="selPic()" class="add-img-btn hidden">		
+				</div>
+				<input type="file" name="upload-file" class="hidden">
+				<div class="appeal-btn text-center" onclick="submitAppeal()">提交</div>
+			</div>
+			<!-- end main -->
+		</div>
+	</body>
+	<script src="../../js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/api.web.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/upload.web.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+
+		//上传图片
+		function selPic() {
+			console.log(1111)
+			Upload.add({
+				max:1,
+				success: function() {
+					console.log($('.add-img-btn').length)
+					// $('.add-img-btn')[1].remove()
+				}
+			})
+		}
+		
+		//申诉内容
+		function submitAppeal() {
+			var title = Former.getValue('input[name=title]');
+			var content = Former.getValue('textarea[name=content]');
+			if(!title){
+				Tool.toast('申诉标题不能为空');
+				return;
+			}
+			if(content.length < 5){
+				Tool.toast('内容不能少于5个字');
+				return;
+			}
+			ajax.get({
+				ctrl: 'User',
+				fn: 'appeal',
+				data: {
+					values: {
+						title:title,
+						memo:content,
+					},
+				},
+				showError: true,
+				hideLoading: false,
+				showProgress: false,
+				success: function(ct) {
+					Tool.toast('申诉内容提交成功');
+				}
+			})
+
+		}
+	</script>
+</html>

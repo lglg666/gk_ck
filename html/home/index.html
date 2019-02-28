@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+		<meta name="format-detection" content="telephone=no">
+		<title></title>
+	</head>
+	<link rel="stylesheet" type="text/css" href="../../css/ct.css" />
+	<style type="text/css">
+		#header {
+			width: 100%;
+			min-height: 193px;
+			padding-bottom: 45px;
+			background-size: 100% 100%;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-image: url(../../image/bg.png);
+		}
+		
+		.info {
+			color: #FFFFFF;
+			margin: 30px 20px 10px;
+			padding: 20px 10px;
+			border-radius: 8px;
+			background-color: rgba(255, 255, 255, 0.3);
+		}
+		
+		.img {
+			width: 65px;
+			height: 65px;
+			background-image: url(../../image/touxiang.png);
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+		
+		.ct-icon-setting {
+			background-image: url(../../image/shezhi.png);
+		}
+		
+		.level {
+			background-color: #D2B900;
+			color: #FFFFFF;
+			border-radius: 3px;
+			padding: 3px;
+			min-width: 30%;
+			max-width: 45%;
+		}
+		
+		.list {
+			margin-top: 20px;
+			border-radius: 10px;
+			background: linear-gradient(to right, #2FBDD7, #30A1D6);
+		}
+		
+		.icon {
+			width: 50px;
+			height: 50px;
+		}
+		
+		.ct-icon-reg {
+			background-image: url(../../image/zhuce.png);
+		}
+		
+		.ct-icon-upgrade {
+			background-image: url(../../image/shenji.png);
+		}
+		
+		.ct-icon-check {
+			background-image: url(../../image/shenghe.png);
+		}
+		
+		.ct-icon-team {
+			background-image: url(../../image/wodetuandui.png);
+		}
+		
+		.title {
+			color: #fff;
+		}
+		
+		.row .item {
+			padding: 0 10px;
+		}
+		#main{
+			background-color: #fff;
+		}
+	</style>
+
+	<body>
+		<div id="wrap">
+			<div id="header">
+				<div class="info flex-box flex-v-ce hidden">
+					<div class="img margin-r-15"></div>
+					<div class="flex-1">
+						<div class="flex-box flex-v-ce">
+							<div class="flex-1 text-left">ID:2 &nbsp;&nbsp; (马化云)</div>
+							<a class="ct-icon-setting" href="setting.html"></a>
+						</div>
+						<div class="code margin-t-5 text-left">推荐码: &nbsp; AX56CT</div>
+						<div class="level margin-t-5">等级:普通会员</div>
+					</div>
+				</div>
+			</div>
+			<div id="main">
+				<div class="row padded-10">
+					<a class="col-6 item" href="../login/register.html">
+						<div class="padded-20 list flex-box-v flex-center-center">
+							<div class="ct-icon-reg icon"></div>
+							<div class="title margin-t-15">帮助注册</div>
+						</div>
+					</a>
+					<a class="col-6 item" href="../team/upgrade.html">
+						<div class="padded-20 list flex-box-v flex-center-center">
+							<div class="ct-icon-upgrade icon"></div>
+						<div class="title margin-t-15">申请升级</div>
+						</div>
+					</a>
+					<a class="col-6 item" href="../team/rankList.html">
+						<div class="padded-20 list flex-box-v flex-center-center">
+							<div class="ct-icon-check icon"></div>
+							<div class="title margin-t-15">审核升级</div>
+						</div>
+					</a>
+					<div class="col-6 item">
+						<a class="padded-20 list flex-box-v flex-center-center" href="../team/team.html">
+							<div class="ct-icon-team icon"></div>
+							<div class="title margin-t-15">我的团队</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/api.web.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/template" template="main">
+		<div class="info flex-box flex-v-ce">
+			<div class="img margin-r-15"></div>
+			<div class="flex-1">
+				<div class="flex-box flex-v-ce">
+					<div class="flex-1 text-left">ID:{{= it.user_id}} &nbsp;&nbsp; ({{= it.user_name}})</div>
+					<a class="ct-icon-setting" href="setting.html"></a>
+				</div>
+				<div class="code margin-t-5 text-left">推荐码: &nbsp; {{= it.spread}}</div>
+				<div class="level margin-t-5">等级:{{= it.level}}</div>
+			</div>
+		</div>
+	</script>
+	<script type="text/javascript">
+		var token = $api.getStorage(CONFIG.KEY.TOKEN);
+		var user_id = $api.getStorage(CONFIG.KEY.MEMBER_ID);
+		var memberInfo = $api.getStorage(CONFIG.KEY.MEMBER_INFO);
+		function init() {
+			T.html('#header', 'main', memberInfo);
+		}
+		$(function(){
+			Tool.isLogin({
+				success: function() {
+					init();
+				}
+			});
+		})
+	</script>
+	
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport"
+		content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<title>我的团队</title>
+	<link rel="stylesheet" type="text/css" href="../../css/ct.css" />
+	<style type="text/css">
+		.ct-icon-left {
+			background-image: url(../../image/arrow-left-black.png);
+		}
+
+		#main {
+			background-color: #f2f2f2;
+			padding: 10px;
+		}
+
+		.list {
+			background-color: #fff;
+			padding: 12px 10px;
+			border-radius: 3px;
+			;
+		}
+
+		.text-999 {
+			color: #999;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="wrap">
+		<header class="header-bg">
+			<div id="header" class="header">
+				<div class="topbar" style="">
+					<span class="ct-icon-left ct-icon-left-black" onclick="javascript :history.back(-1);"></span>
+					<span class="title text-overflow" style="max-width: 200px;">我的团队</span>
+				</div>
+			</div>
+		</header>
+		<div id="main">
+			<div class="list margin-b-5 hidden">
+				<div class="padded-b-5">姓名：小姐姐</div>
+				<div class="flex-box flex-v-ce padded-b-5">
+					<div class="flex-1 text-overflow">手机号码：13902308870</div>
+					<div class="text-999">2019/1/16 16:25:10</div>
+				</div>
+				<div class="text-overflow">微信号：wx001</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="../../js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/api.web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/loadMore.web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/template" template="list">
+		{{? it && it instanceof Array && it.length != 0}}
+			{{~it: value:index  }}
+					<div class="list margin-b-5">
+						<div class="padded-b-5">姓名：{{= value.true_name || ''}}</div>
+						<div class="flex-box flex-v-ce padded-b-5">
+							<div class="flex-1 text-overflow">手机号码：{{= value.mobile || ''}}</div>
+							<div class="text-999">{{=   D.t3(value.reg_time) || '' }}</div>
+						</div>
+						<div class="text-overflow">微信号：{{= value.weixin || ''}}</div>
+					</div>
+				{{~}}
+		{{??}}
+			{{= Tool.returnNull() }}
+		{{?}}
+	</script>
+<script type="text/javascript">
+	//请求团队列表
+	function init() {
+		ajax.get({
+			ctrl: 'Team',
+			fn: 'reviewUserList',
+			data: {
+				values: {
+				},
+			},
+			showError: true,
+			hideLoading: false,
+			showProgress: false,
+			success: function (ct) {
+				T.html('#main', 'list', ct);
+				loadMore();
+			}
+		})
+	}
+
+	//加载更多
+	function loadMore() {
+		LoadMore.init({
+			ctrl: 'Team',
+			fn: 'reviewUserList',
+			values: {
+			},
+			count: function () {
+				return {
+					status: 1,
+					values: {
+					},
+				}
+			},
+			showError: true,
+			success: function (ct, newPage) {
+			},
+		})
+	}
+
+
+
+	window.onload = function () {
+		init();
+	}
+</script>
+
+</html>

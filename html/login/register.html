@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<title用户注册</title>
+		<link rel="stylesheet" type="text/css" href="../../css/ct.css" />
+		<style type="text/css">
+			#main {
+				background-color: #FFFFFF;
+			}
+
+			.list {
+				width: 90%;
+				margin: 0 auto;
+				border-bottom: 1px solid #d3d3d3;
+			}
+
+			.name {
+				width: 85px;
+			}
+
+			.btn {
+				margin-top: 15px;
+				width: 100%;
+			}
+
+			.btn button {
+				outline: 0;
+				width: 100%;
+				background: linear-gradient(to right, #2FBDD7, #30A1D6);
+				font-size: 18px;
+				position: relative;
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+				padding-left: 14px;
+				padding-right: 14px;
+				box-sizing: border-box;
+				font-size: 18px;
+				text-align: center;
+				text-decoration: none;
+				color: #fff;
+				line-height: 2.5;
+				border-radius: 5px;
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+				overflow: hidden;
+			}
+
+			.none {
+				display: none;
+			}
+		</style>
+</head>
+
+<body>
+	<div id="wrap">
+		<div id="main">
+			<header class="header-bg">
+				<div id="header" class="header">
+					<div class="topbar" style="">
+						<span class="ct-icon-left ct-icon-left-black" onclick="javascript :history.back(-1);"></span>
+						<span class="title text-overflow" style="max-width: 200px;">用户注册</span>
+					</div>
+				</div>
+			</header>
+			<div class="content">
+				<div class="list flex-box flex-v-ce">
+					<div class="name">手机号码</div>
+					<input type="number" placeholder="请输入手机号码" class="flex-1 padded-15" name="mobile" value="" />
+				</div>
+				<div class="list flex-box flex-v-ce">
+					<div class="name">会员姓名</div>
+					<input type="text" placeholder="请输入会员姓名" class="flex-1 padded-15" name="true_name" value="" />
+				</div>
+				<div class="list flex-box flex-v-ce">
+					<div class="name">会员昵称</div>
+					<input type="text" placeholder="请输入会员昵称" class="flex-1 padded-15" name="nickname" value="" />
+				</div>
+				<div class="list flex-box flex-v-ce">
+					<div class="name">微信号</div>
+					<input type="text" placeholder="请输入微信号" class="flex-1 padded-15" name="weixin" value="" />
+				</div>
+				<div class="list flex-box flex-v-ce">
+					<div class="name">一级密码</div>
+					<input type="password" placeholder="请输入一级密码" class="flex-1 padded-15" name="pwd" value="" />
+				</div>
+				<div class="list flex-box flex-v-ce">
+					<div class="name">一级密码确认</div>
+					<input type="password" placeholder="请重复密码" class="flex-1 padded-15" name="re_pwd" value="" />
+				</div>
+				<div class="list flex-box flex-v-ce">
+					<div class="name">推广码</div>
+					<input type="text" placeholder="请输入推广码" class="flex-1 padded-15 code" name="spread" value="" />
+
+					<div class="kkk hidden  padded-15"></div>
+				</div>
+				<div class="btn">
+					<button type="button" name="button" onclick="register()">注册</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="../../js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/api.web.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/doT.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	if ($api.getStorage(CONFIG.KEY.MEMBER_INFO)) {
+		$api.addCls($api.dom('.code'), 'hidden');
+		$api.removeCls($api.dom('.kkk'), 'hidden');
+		$api.text($api.dom(".kkk"), $api.getStorage(CONFIG.KEY.MEMBER_INFO).spread);
+
+	}
+
+	function register() {
+		var mobile = Former.getValue('input[name=mobile]');
+		var true_name = Former.getValue('input[name=true_name]');
+		var nickname = Former.getValue('input[name=nickname]')
+		var weixin = Former.getValue('input[name=weixin]')
+		var pwd = Former.getValue('input[name=pwd]')
+		var re_pwd = Former.getValue('input[name=re_pwd]')
+
+		if ($api.getStorage(CONFIG.KEY.MEMBER_INFO)) {
+			var spread = $api.getStorage(CONFIG.KEY.MEMBER_INFO).spread;
+		} else {
+			var spread = Former.getValue('input[name=spread]');
+		}
+		if (!weixin) {
+			Tool.toast("请输入微信号");
+			return
+		}
+		if (!Former.validateNickname(nickname)) return;
+		if (!Former.validateRealname(true_name)) return;
+		if (!Former.validatePhone(mobile)) return;
+		if (!Former.validatePassword(pwd)) return;
+		if (!Former.validatePassword(re_pwd)) return;
+		if (pwd != re_pwd) {
+			Tool.toast("请确保两次密码一致")
+			return
+		}
+
+		ajax.get({
+			ctrl: 'Reg',
+			fn: 'reg',
+			data: {
+				values: {
+					mobile: mobile,
+					true_name: true_name,
+					nickname: nickname,
+					weixin: weixin,
+					pwd: pwd,
+					re_pwd: re_pwd,
+					spread: spread,
+				},
+			},
+			showError: true,
+			hideLoading: false,
+			showProgress: true,
+			success: function(ct) {
+				Tool.toast("注册成功", true);
+				setTimeout(function() {
+					window.location.reload()
+				}, 1000)
+				console.log(ct);
+			}
+		})
+
+
+	}
+</script>
+
+</html>
